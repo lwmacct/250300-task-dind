@@ -26,9 +26,9 @@ vars:
   GIT_COMMIT:
     sh: git log -n 1 --format=%h 2>/dev/null || echo "0000"
   GIT_SOURCE:
-    sh: |
-      grep <.git/config 'git@github.com' -E | head -n1 | sed 's|.git$||; s|:|/|; s|git@|https://|' | awk '{print $NF}'
-
+    sh: grep -A1 '^\[remote' .git/config | grep 'url' | head -n 1 | sed 's|.git$||; s|:|/|; s|git@|https://|' | awk '{print $NF}'
+  GIT_PROJECT:
+    sh: echo "{{.GIT_SOURCE}}" | awk -F/ '{print $NF}'
 tasks:
   env:
     desc: "显示环境变量"
@@ -47,3 +47,5 @@ tasks:
         echo "GIT_TAG_LATEST: {{.GIT_TAG_LATEST}}"
         echo "GIT_COMMIT: {{.GIT_COMMIT}}"
         echo "GIT_SOURCE: {{.GIT_SOURCE}}"
+        echo "GIT_PROJECT: {{.GIT_PROJECT}}"
+
